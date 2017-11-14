@@ -90,10 +90,12 @@ namespace Minkin_Lab02
     class TimeMachine
     {
         public string Path { get; private set; }
+        private Dictionary<string, DateTime> FilesLog { get; set; }
 
         public TimeMachine(string path)
         {
             Path = path;
+            FilesLog = new Dictionary<string, DateTime>();
             FileSystemWatcher watcher = new FileSystemWatcher();
             watcher.Path = Path;
             watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
@@ -112,7 +114,11 @@ namespace Minkin_Lab02
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
+            if (!FilesLog.ContainsKey(e.FullPath) || (FilesLog.ContainsKey(e.FullPath) && FilesLog[e.FullPath] != DateTime.Now))
+            {
+                Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
+                FilesLog.Add(e.FullPath, DateTime.Now);
+            }
         }
     }
 }
