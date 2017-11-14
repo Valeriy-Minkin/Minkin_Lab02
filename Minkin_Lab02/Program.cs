@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,9 +11,13 @@ namespace Minkin_Lab02
     {
         //https://docs.microsoft.com/ru-ru/dotnet/csharp/programming-guide/main-and-command-args/command-line-arguments
 
+        static List<string> listOfFolder = new List<string>(new string[]{@"C:\Users\ray-s_000\Documents\Lab_01\Task10\TestFolder"});
+
         static void Main(string[] args)
         {
             CheckKeys(args);
+            Console.WriteLine("Press any key for exit");
+            Console.ReadKey();
         }
 
         private static void CheckKeys(string[] args)
@@ -75,6 +80,39 @@ namespace Minkin_Lab02
         private static void Watch()
         {
             Console.WriteLine("Watch");
+            foreach (string str in listOfFolder)
+            {
+                TimeMachine timeMachine = new TimeMachine(str);
+            }
+        }
+    }
+
+    class TimeMachine
+    {
+        public string Path { get; private set; }
+
+        public TimeMachine(string path)
+        {
+            Path = path;
+            FileSystemWatcher watcher = new FileSystemWatcher();
+            watcher.Path = Path;
+            watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            watcher.Filter = "*.txt";
+            watcher.Changed += new FileSystemEventHandler(OnChanged);
+            watcher.Created += new FileSystemEventHandler(OnChanged);
+            watcher.Deleted += new FileSystemEventHandler(OnChanged);
+            watcher.Renamed += new RenamedEventHandler(OnRenamed);
+            watcher.EnableRaisingEvents = true;
+        }
+
+        private void OnRenamed(object sender, RenamedEventArgs e)
+        {
+            
+        }
+
+        private void OnChanged(object sender, FileSystemEventArgs e)
+        {
+            Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
         }
     }
 }
