@@ -11,6 +11,7 @@ namespace Minkin_Lab02
     class Program
     {
         static List<string> listOfFolder = new List<string>(new string[]{@"C:\Users\ray-s_000\Documents\Lab_01\Task10\TestFolder"});
+        static Config config;
 
         static void Main(string[] args)
         {
@@ -29,10 +30,10 @@ namespace Minkin_Lab02
 
         private static void ReadConfig()
         {
-            Config config = new Config();
+            config = new Config();
             if (config.ConfigExist())
             {
-                config.ReadConfig();
+                config = Config.ReadConfig();
             }
             else
             {
