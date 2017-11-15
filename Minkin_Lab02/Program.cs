@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,15 +10,34 @@ namespace Minkin_Lab02
 {
     class Program
     {
-        //https://docs.microsoft.com/ru-ru/dotnet/csharp/programming-guide/main-and-command-args/command-line-arguments
-
         static List<string> listOfFolder = new List<string>(new string[]{@"C:\Users\ray-s_000\Documents\Lab_01\Task10\TestFolder"});
 
         static void Main(string[] args)
         {
+            ReadConfig();
+            CheckFirstStart();
             CheckKeys(args);
             Console.WriteLine("Press any key for exit");
             Console.ReadKey();
+        }
+
+        private static void CheckFirstStart()
+        {
+            
+            //using()
+        }
+
+        private static void ReadConfig()
+        {
+            Config config = new Config();
+            if (config.ConfigExist())
+            {
+                config.ReadConfig();
+            }
+            else
+            {
+                config.WriteConfig();
+            }
         }
 
         private static void CheckKeys(string[] args)
@@ -90,12 +110,13 @@ namespace Minkin_Lab02
     class TimeMachine
     {
         public string Path { get; private set; }
-        private Dictionary<string, DateTime> FilesLog { get; set; }
+        private Dictionary<string, DateTime> LastChangeOfFile { get; set; }
+        //private List
 
         public TimeMachine(string path)
         {
             Path = path;
-            FilesLog = new Dictionary<string, DateTime>();
+            LastChangeOfFile = new Dictionary<string, DateTime>();
             FileSystemWatcher watcher = new FileSystemWatcher();
             watcher.Path = Path;
             watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
@@ -114,11 +135,13 @@ namespace Minkin_Lab02
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
-            if (!FilesLog.ContainsKey(e.FullPath) || (FilesLog.ContainsKey(e.FullPath) && FilesLog[e.FullPath] != DateTime.Now))
-            {
-                Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
-                FilesLog.Add(e.FullPath, DateTime.Now);
-            }
+            Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
+            //if (!LastChangeOfFile.ContainsKey(e.FullPath) || (LastChangeOfFile.ContainsKey(e.FullPath) && LastChangeOfFile[e.FullPath] != DateTime.Now))
+            //{
+            //    Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
+            //    Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
+            //    LastChangeOfFile.Add(e.FullPath, DateTime.Now);
+            //}
         }
     }
 }
