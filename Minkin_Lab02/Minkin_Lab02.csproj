@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backup.cs" />
+    <Compile Include="CurrentData.cs" />
     <Compile Include="FilesManager.cs" />
     <Compile Include="LogManager.cs" />
     <Compile Include="Serializable\Config.cs" />

@@ -5,44 +5,65 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Minkin_Lab02
 {
     class Program
     {
-        static Config config;
-        static Log currentLog;
-
         static void Main(string[] args)
         {
             ReadConfig();
+            Timer timer = new Timer(RewriteConfig, null, 1000, 10000);
             CheckFirstStart();
             CheckKeys(args);
             Console.WriteLine("Press any key for exit");
             Console.ReadKey();
         }
 
+        private static void RewriteConfig(object state)
+        {
+            ConfigManager configManager = new ConfigManager();
+            configManager.WriteToFile(CurrentData.getInstance().CurrentConfig);
+        }
+
         private static void CheckFirstStart()
         {
-            if (!Directory.Exists(config.LogsOfBackupFolder))
+            if (!Directory.Exists(CurrentData.getInstance().CurrentConfig.LogsOfBackupFolder)) //config.LogsOfBackupFolder))
             { 
-                Backup backup = new Backup(config.LogsOfBackupFolder);
-                backup.Path = config.MonitorableFolders.First();
-                backup.BackupAllFolder(config);
+                Backup backup = new Backup();
+                backup.Path = CurrentData.getInstance().CurrentConfig.MonitorableFolders.First();
+                backup.BackupAllFolder();
             }
         }
 
         private static void ReadConfig()
         {
             ConfigManager configManager = new ConfigManager();
-            config = new Config();
+            CurrentData.getInstance().CurrentConfig = new Config();
             if (configManager.Exist())
             {
-                config = configManager.ReadFromFile();
+                CurrentData.getInstance().CurrentConfig = configManager.ReadFromFile();
+                LogManager logManager = new LogManager();
+                CurrentData.getInstance().CurrentLog = logManager.ReadFromFile(CurrentData.getInstance().CurrentConfig.Logs.Last().Path);
+                //Dictionary<string, int> dick = new Dictionary<string, int>();
+                //foreach(var temp in CurrentData.getInstance().CurrentLog.files)
+                //{
+                //    if (dick.ContainsKey(temp.BackupName))
+                //    {
+                //        dick[temp.BackupName]++;
+                //    }
+                //    else
+                //    {
+                //        dick.Add(temp.BackupName, 0);
+                //    }
+                //}
+                //int dick2 = dick.Count(x => x.Value > 0);
+                //Console.WriteLine();
             }
             else
             {
-                configManager.WriteToFile(config);
+                configManager.WriteToFile(CurrentData.getInstance().CurrentConfig);
             }
         }
 
@@ -93,8 +114,7 @@ namespace Minkin_Lab02
 
         private static void Watch()
         {
-            Console.WriteLine("Watch");
-            foreach (string str in config.MonitorableFolders)
+            foreach (string str in CurrentData.getInstance().CurrentConfig.MonitorableFolders)
             {
                 TimeMachine timeMachine = new TimeMachine(str);
             }

@@ -25,8 +25,9 @@ namespace Minkin_Lab02
             {
                 FileData data = new FileData();
                 data.Path = file;
+                data.Name = file.Substring(file.LastIndexOf('\\') + 1);
                 data.DateOfChange = DateTime.Now;
-                data.BackupName = file.Substring(file.LastIndexOf('\\')+1) + data.DateOfChange.Ticks.ToString();
+                data.BackupName = data.Name + data.DateOfChange.Ticks.ToString();
                 files.Add(data);
             }
         }
