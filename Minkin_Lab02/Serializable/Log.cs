@@ -26,21 +26,8 @@ namespace Minkin_Lab02
                 FileData data = new FileData();
                 data.Path = file;
                 data.DateOfChange = DateTime.Now;
-                data.BackupName = file.Substring(file.LastIndexOf('\\')) + data.DateOfChange.Ticks.ToString();
+                data.BackupName = file.Substring(file.LastIndexOf('\\')+1) + data.DateOfChange.Ticks.ToString();
                 files.Add(data);
-            }
-        }
-
-        public void WriteToFile(string path)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(Log));
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-            using (FileStream filestream = new FileStream(Path.Combine(path, DateTime.Now.Ticks.ToString()+".xml"), FileMode.OpenOrCreate))
-            {
-                serializer.Serialize(filestream, this);
             }
         }
     }

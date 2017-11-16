@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Minkin_Lab02
 {
-    class Backup
+    public class Backup
     {
         public string Path { get; set; }
 
@@ -25,8 +25,10 @@ namespace Minkin_Lab02
         {
             IEnumerable<string> list = Directory.EnumerateFiles(Path, "*", SearchOption.AllDirectories);
             Log log = new Log(list);
-            log.WriteToFile(config.BackupFolder);
-
+            LogManager logManager = new LogManager();
+            logManager.WriteToFile(log, config.LogsOfBackupFolder);
+            FilesManager filesManager = new FilesManager();
+            filesManager.WriteFileList(log, config.BackupFolder);
             Console.Write("");
 
             //CopyFile

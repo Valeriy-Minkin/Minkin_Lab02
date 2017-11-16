@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Minkin_Lab02
 {
-    class TimeMachine
+    internal class TimeMachine
     {
         public string Path { get; private set; }
         private Dictionary<string, DateTime> LastChangeOfFile { get; set; }

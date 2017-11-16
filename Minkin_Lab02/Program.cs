@@ -11,6 +11,7 @@ namespace Minkin_Lab02
     class Program
     {
         static Config config;
+        static Log currentLog;
 
         static void Main(string[] args)
         {
@@ -23,9 +24,9 @@ namespace Minkin_Lab02
 
         private static void CheckFirstStart()
         {
-            if (!Directory.Exists(config.BackupFolder))
-            {
-                Backup backup = new Backup();
+            if (!Directory.Exists(config.LogsOfBackupFolder))
+            { 
+                Backup backup = new Backup(config.LogsOfBackupFolder);
                 backup.Path = config.MonitorableFolders.First();
                 backup.BackupAllFolder(config);
             }
@@ -33,14 +34,15 @@ namespace Minkin_Lab02
 
         private static void ReadConfig()
         {
+            ConfigManager configManager = new ConfigManager();
             config = new Config();
-            if (config.Exist())
+            if (configManager.Exist())
             {
-                config = Config.ReadFromFile();
+                config = configManager.ReadFromFile();
             }
             else
             {
-                config.WriteToFile();
+                configManager.WriteToFile(config);
             }
         }
 
