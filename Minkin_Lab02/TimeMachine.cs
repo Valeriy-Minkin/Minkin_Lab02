@@ -39,6 +39,7 @@ namespace Minkin_Lab02
             }
             FileSystemWatcher watcher = new FileSystemWatcher();
             watcher.Path = Path;
+            watcher.InternalBufferSize = 100000000;
             watcher.NotifyFilter = notifyFilters;
             watcher.Filter = Filter;
             watcher.IncludeSubdirectories = true;
