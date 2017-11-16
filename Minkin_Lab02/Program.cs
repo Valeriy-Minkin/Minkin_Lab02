@@ -10,7 +10,6 @@ namespace Minkin_Lab02
 {
     class Program
     {
-        static List<string> listOfFolder = new List<string>(new string[]{@"C:\Users\ray-s_000\Documents\Lab_01\Task10\TestFolder"});
         static Config config;
 
         static void Main(string[] args)
@@ -24,26 +23,30 @@ namespace Minkin_Lab02
 
         private static void CheckFirstStart()
         {
-            
-            //using()
+            if (!Directory.Exists(config.BackupFolder))
+            {
+                Backup backup = new Backup();
+                backup.Path = config.MonitorableFolders.First();
+                backup.BackupAllFolder(config);
+            }
         }
 
         private static void ReadConfig()
         {
             config = new Config();
-            if (config.ConfigExist())
+            if (config.Exist())
             {
-                config = Config.ReadConfig();
+                config = Config.ReadFromFile();
             }
             else
             {
-                config.WriteConfig();
+                config.WriteToFile();
             }
         }
 
         private static void CheckKeys(string[] args)
         {
-            if(args!=null && args.Length!=0)
+            if (args != null && args.Length != 0)
             {
                 switch (args[0])
                 {
@@ -56,7 +59,7 @@ namespace Minkin_Lab02
                     default:
                         AskUser();
                         break;
-                }               
+                }
             }
             else
             {
@@ -77,19 +80,7 @@ namespace Minkin_Lab02
                     break;
                 default:
                     Console.WriteLine("{0}Wrong mode!", Environment.NewLine);
-                    Restart();
                     break;
-            }
-        }
-
-        private static void Restart()
-        {
-            Console.Write("Try again? (y/n) ");
-            ConsoleKeyInfo key = Console.ReadKey();
-            if (key.KeyChar == 'y' || key.KeyChar == 'Y')
-            {
-                Console.WriteLine("");
-                AskUser();
             }
         }
 
@@ -101,48 +92,10 @@ namespace Minkin_Lab02
         private static void Watch()
         {
             Console.WriteLine("Watch");
-            foreach (string str in listOfFolder)
+            foreach (string str in config.MonitorableFolders)
             {
                 TimeMachine timeMachine = new TimeMachine(str);
             }
-        }
-    }
-
-    class TimeMachine
-    {
-        public string Path { get; private set; }
-        private Dictionary<string, DateTime> LastChangeOfFile { get; set; }
-        //private List
-
-        public TimeMachine(string path)
-        {
-            Path = path;
-            LastChangeOfFile = new Dictionary<string, DateTime>();
-            FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Path = Path;
-            watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-            watcher.Filter = "*.txt";
-            watcher.Changed += new FileSystemEventHandler(OnChanged);
-            watcher.Created += new FileSystemEventHandler(OnChanged);
-            watcher.Deleted += new FileSystemEventHandler(OnChanged);
-            watcher.Renamed += new RenamedEventHandler(OnRenamed);
-            watcher.EnableRaisingEvents = true;
-        }
-
-        private void OnRenamed(object sender, RenamedEventArgs e)
-        {
-            
-        }
-
-        private void OnChanged(object sender, FileSystemEventArgs e)
-        {
-            Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
-            //if (!LastChangeOfFile.ContainsKey(e.FullPath) || (LastChangeOfFile.ContainsKey(e.FullPath) && LastChangeOfFile[e.FullPath] != DateTime.Now))
-            //{
-            //    Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
-            //    Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
-            //    LastChangeOfFile.Add(e.FullPath, DateTime.Now);
-            //}
         }
     }
 }

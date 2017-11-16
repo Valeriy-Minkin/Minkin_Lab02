@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Configuration;
 
 namespace Minkin_Lab02
 {
@@ -17,19 +18,23 @@ namespace Minkin_Lab02
 
         public string BackupFolder { get; set; }
         public List<string> MonitorableFolders { get; set; }
+        public List<Folder> Logs { get; set; }
 
         public Config()
-        {            
+        {
             ConfigPath = Path.Combine(WorkFolder, "config.xml");
             MonitorableFolders = new List<string>();
+            Logs = new List<Folder>();
+            // MonitorableFolders.Add(AppDomain.CurrentDomain.BaseDirectory);
+            MonitorableFolders.Add(@"C:\Users\ray-s_000\Documents\Lab_01\Task10\TestFolder");
         }
 
-        public bool ConfigExist()
+        public bool Exist()
         {
             return File.Exists(ConfigPath);
         }
 
-        public static Config ReadConfig()
+        public static Config ReadFromFile()
         {
             Config config = new Config();
             string configPath = Path.Combine(WorkFolder, "config.xml");
@@ -41,10 +46,9 @@ namespace Minkin_Lab02
             return config;
         }
 
-        public void WriteConfig()
+        public void WriteToFile()
         {
             BackupFolder = Path.Combine(WorkFolder, "backup\\");
-            //MonitorableFolders.Add(String.Empty);
             XmlSerializer serializer = new XmlSerializer(typeof(Config));
             using (FileStream filestream = new FileStream("config.xml", FileMode.OpenOrCreate))
             {
