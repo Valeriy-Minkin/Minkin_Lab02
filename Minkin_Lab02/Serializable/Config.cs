@@ -28,8 +28,8 @@ namespace Minkin_Lab02
             MonitorableFolders = new List<string>();
             Logs = new List<Folder>();
             // MonitorableFolders.Add(AppDomain.CurrentDomain.BaseDirectory);
-            MonitorableFolders.Add(@"C:\Users\ray-s_000\Documents\Lab_01\Task10\TestFolder");
-            //MonitorableFolders.Add(@"C:\temp");//
+            //MonitorableFolders.Add(@"C:\Users\ray-s_000\Documents\Lab_01\Task10\TestFolder");
+            MonitorableFolders.Add(@"C:\temp");//
         }
     }
 }

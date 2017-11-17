@@ -22,6 +22,28 @@ namespace Minkin_Lab02
             return File.Exists(ConfigPath);
         }
 
+        public void ReadConfig()
+        {
+            Cache.getInstance().CurrentConfig = new Config();
+            if (this.Exist())
+            {
+                Cache.getInstance().CurrentConfig = this.ReadFromFile();
+                LogManager logManager = new LogManager();
+                if (Cache.getInstance().CurrentConfig.Logs.Count != 0)
+                {
+                    Cache.getInstance().CurrentLog = logManager.ReadFromFile(Cache.getInstance().CurrentConfig.Logs.Last().Path);
+                }
+                else
+                {
+                    Cache.getInstance().CurrentLog = new CurrentFilesCondition();
+                }
+            }
+            else
+            {
+                this.WriteToFile(Cache.getInstance().CurrentConfig);
+            }
+        }
+
         public Config ReadFromFile()
         {
             Config config = new Config();

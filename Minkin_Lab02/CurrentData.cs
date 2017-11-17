@@ -6,29 +6,31 @@ using System.Threading.Tasks;
 
 namespace Minkin_Lab02
 {
-    class CurrentData
+    class Cache
     {
-        private static CurrentData instance;
+        private static Cache instance;
         private int _count;
 
-        private CurrentData()
+        private Cache()
         {
             CurrentConfig = new Config();
-            CurrentLog = new Log();
-            ChangedFiles = new Log();
+            CurrentLog = new CurrentFilesCondition();
+            ChangedFiles = new CurrentFilesCondition();
+            HasChanges = false;
             _count = 0;
         }
 
-        public static CurrentData getInstance()
+        public static Cache getInstance()
         {
             if (instance == null)
-                instance = new CurrentData();
+                instance = new Cache();
             return instance;
         }
 
         public Config CurrentConfig { get; set; }
-        public Log CurrentLog { get; set; }
-        public Log ChangedFiles { get; set; }
+        public CurrentFilesCondition CurrentLog { get; set; }
+        public CurrentFilesCondition ChangedFiles { get; set; }
+        public bool HasChanges { get; set; }
 
         public long GetCount()
         {

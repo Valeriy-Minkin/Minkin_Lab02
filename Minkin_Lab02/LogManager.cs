@@ -11,10 +11,10 @@ namespace Minkin_Lab02
 {
     internal class LogManager
     {
-        public string WriteToFile(Log log, string path)
+        public string WriteToFile(CurrentFilesCondition log, string path)
         {
-            string fullfilepath = Path.Combine(path, DateTime.Now.Ticks.ToString()+ CurrentData.getInstance().GetCount().ToString() + ".xml");
-            XmlSerializer serializer = new XmlSerializer(typeof(Log));
+            string fullfilepath = Path.Combine(path, DateTime.Now.Ticks.ToString()+ Cache.getInstance().GetCount().ToString() + ".xml");
+            XmlSerializer serializer = new XmlSerializer(typeof(CurrentFilesCondition));
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -26,13 +26,13 @@ namespace Minkin_Lab02
             return fullfilepath;
         }
 
-        public Log ReadFromFile(string path)
+        public CurrentFilesCondition ReadFromFile(string path)
         {
-            Log log = new Log();
-            XmlSerializer serializer = new XmlSerializer(typeof(Log));
+            CurrentFilesCondition log = new CurrentFilesCondition();
+            XmlSerializer serializer = new XmlSerializer(typeof(CurrentFilesCondition));
             using (FileStream filestream = new FileStream(path, FileMode.OpenOrCreate))
             {
-                log = (Log)serializer.Deserialize(filestream);
+                log = (CurrentFilesCondition)serializer.Deserialize(filestream);
             }
             return log;
         }

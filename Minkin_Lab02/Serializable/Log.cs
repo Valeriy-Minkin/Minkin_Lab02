@@ -9,16 +9,16 @@ using System.Xml.Serialization;
 namespace Minkin_Lab02
 {
     [Serializable]
-    public class Log
+    public class CurrentFilesCondition
     {
         public List<FileData> files { get; set; } 
 
-        public Log()
+        public CurrentFilesCondition()
         {
             files = new List<FileData>();
         }
 
-        public Log(IEnumerable<string> list)
+        public CurrentFilesCondition(IEnumerable<string> list)
         {
             files = new List<FileData>();
             foreach (string file in list)

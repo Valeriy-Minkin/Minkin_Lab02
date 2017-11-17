@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Minkin_Lab02.Properties;
 
 namespace Minkin_Lab02
 {
@@ -17,59 +18,29 @@ namespace Minkin_Lab02
         static void Main(string[] args)
         {
             ReadConfig();
-            Timer timer = new Timer(RewriteConfig, null, 1000, 2000);
+            Timer timer = new Timer(BackgroundCacheWriter, null, 1000, 2000);
             CheckFirstStart();
             CheckKeys(args);
-            Console.WriteLine("Press any key for exit");
+            Console.WriteLine(Resources.PressAnyKey);
             Console.ReadKey();
         }
 
-        private static void RewriteConfig(object state)
+        private static void BackgroundCacheWriter(object state)
         {
-            if (CurrentData.getInstance().ChangedFiles.files!=null && CurrentData.getInstance().ChangedFiles.files.Count != 0)
-            {
-                ConfigManager configManager = new ConfigManager();
-                configManager.WriteToFile(CurrentData.getInstance().CurrentConfig);
-                Backup backup = new Backup();
-                backup.BackupAllFolder(CurrentData.getInstance().CurrentLog, CurrentData.getInstance().ChangedFiles);
-                CurrentData.getInstance().ChangedFiles.files = new List<FileData>();
-            }
+            BackgroundWorker backgroundWorker = new BackgroundWorker();
+            backgroundWorker.CacheWrite();
         }
 
         private static void CheckFirstStart()
         {
-            if (!Directory.Exists(CurrentData.getInstance().CurrentConfig.LogsOfBackupFolder))
-            { 
-                Backup backup = new Backup();
-                backup.Path = CurrentData.getInstance().CurrentConfig.MonitorableFolders.First();
-                IEnumerable<string> list = Directory.EnumerateFiles(backup.Path, "*", SearchOption.AllDirectories);
-                Log log = new Log(list);
-                backup.BackupAllFolder(log, log);
-                CurrentData.getInstance().CurrentLog = log;
-            }
+            BackgroundWorker backgroundWorker = new BackgroundWorker();
+            backgroundWorker.CheckFirstStart();
         }
 
         private static void ReadConfig()
         {
             ConfigManager configManager = new ConfigManager();
-            CurrentData.getInstance().CurrentConfig = new Config();
-            if (configManager.Exist())
-            {
-                CurrentData.getInstance().CurrentConfig = configManager.ReadFromFile();
-                LogManager logManager = new LogManager();
-                if (CurrentData.getInstance().CurrentConfig.Logs.Count != 0)
-                {
-                    CurrentData.getInstance().CurrentLog = logManager.ReadFromFile(CurrentData.getInstance().CurrentConfig.Logs.Last().Path);
-                }
-                else
-                {
-                    CurrentData.getInstance().CurrentLog = new Log();
-                }
-            }
-            else
-            {
-                configManager.WriteToFile(CurrentData.getInstance().CurrentConfig);
-            }
+            configManager.ReadConfig();
         }
 
         private static void CheckKeys(string[] args)
@@ -97,7 +68,7 @@ namespace Minkin_Lab02
 
         private static void AskUser()
         {
-            Console.WriteLine("Select mode:{0}   1:Watch {0}   2:Reset", Environment.NewLine);
+            Console.WriteLine(Resources.SelectModeText, Environment.NewLine);
             switch (Console.ReadKey().KeyChar)
             {
                 case '1':
@@ -107,7 +78,7 @@ namespace Minkin_Lab02
                     Reset();
                     break;
                 default:
-                    Console.WriteLine("{0}Wrong mode!", Environment.NewLine);
+                    Console.WriteLine(Resources.WrongMode, Environment.NewLine);
                     break;
             }
         }
@@ -133,7 +104,7 @@ namespace Minkin_Lab02
 
         private static void Watch()
         {
-            foreach (string str in CurrentData.getInstance().CurrentConfig.MonitorableFolders)
+            foreach (string str in Cache.getInstance().CurrentConfig.MonitorableFolders)
             {
                 TimeMachine timeMachine = new TimeMachine(str);
             }

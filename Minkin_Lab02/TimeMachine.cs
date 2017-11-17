@@ -55,13 +55,13 @@ namespace Minkin_Lab02
 
         private void OnDeletedFolder(object sender, FileSystemEventArgs e)
         {
-            Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
+            BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
             backup.BackupWithoutFile();
         }
 
         private void OnDeleted(object sender, FileSystemEventArgs e)
         {
-            Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
+            BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
             backup.BackupWithoutFile();
             Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
         }
@@ -70,13 +70,13 @@ namespace Minkin_Lab02
         {
             if (!Directory.Exists(e.FullPath))
             {
-                Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
+                BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
                 backup.BackupFile(e.FullPath);
                 Console.WriteLine("File: {0} is file {1}", e.FullPath, e.ChangeType);
             }
             else
             {
-                Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\'))); //
+                BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\'))); //
                 backup.BackupWithoutFile();
                 Console.WriteLine("File: {0} is folder {1}", e.FullPath, e.ChangeType);
             }
@@ -87,7 +87,7 @@ namespace Minkin_Lab02
         {
             if (!Directory.Exists(e.FullPath))
             {
-                Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
+                BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
                 backup.BackupFile(e.FullPath);
             }
             Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);

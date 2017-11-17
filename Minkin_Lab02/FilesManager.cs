@@ -10,7 +10,7 @@ namespace Minkin_Lab02
 {
     public class FilesManager
     {
-        public void WriteFileList(Log log, string path)
+        public void WriteFileList(CurrentFilesCondition log, string path)
         {
             FileData[] newLog = new FileData[log.files.Count];
             log.files.CopyTo(newLog);
@@ -47,6 +47,25 @@ namespace Minkin_Lab02
                 Console.WriteLine(ex.Message);
             }
 
+        }
+
+        public void ClearFolder()
+        {
+            foreach (var currentfolder in Cache.getInstance().CurrentConfig.MonitorableFolders)
+            {
+                IEnumerable<string> list = Directory.EnumerateFiles(currentfolder, "*.txt", SearchOption.AllDirectories);
+                foreach (var file in list)
+                {
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Can't delete file");
+                    }
+                }
+            }
         }
     }
 }
