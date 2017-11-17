@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Minkin_Lab02.Properties;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,15 +14,29 @@ namespace Minkin_Lab02
     {
         public string WriteToFile(CurrentFilesCondition log, string path)
         {
-            string fullfilepath = Path.Combine(path, DateTime.Now.Ticks.ToString()+ Cache.getInstance().GetCount().ToString() + ".xml");
+            string fullfilepath = Path.Combine(path, DateTime.Now.Ticks.ToString()+ Cache.getInstance().GetCount().ToString() + Resources.XmlMask);
             XmlSerializer serializer = new XmlSerializer(typeof(CurrentFilesCondition));
             if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory(path);
+                try
+                {
+                    Directory.CreateDirectory(path);
+                }
+                catch
+                {
+                    throw new Exception(Resources.CreateFolderError);
+                }
             }
             using (FileStream filestream = new FileStream(fullfilepath, FileMode.OpenOrCreate))
             {
-                serializer.Serialize(filestream, log);
+                try
+                {
+                    serializer.Serialize(filestream, log);
+                }
+                catch
+                {
+                    throw new Exception(Resources.WriteLogError);
+                }
             }
             return fullfilepath;
         }
@@ -32,7 +47,14 @@ namespace Minkin_Lab02
             XmlSerializer serializer = new XmlSerializer(typeof(CurrentFilesCondition));
             using (FileStream filestream = new FileStream(path, FileMode.OpenOrCreate))
             {
-                log = (CurrentFilesCondition)serializer.Deserialize(filestream);
+                try
+                {
+                    log = (CurrentFilesCondition)serializer.Deserialize(filestream);
+                }
+                catch
+                {
+                    throw new Exception(Resources.ReadLogError);
+                }
             }
             return log;
         }

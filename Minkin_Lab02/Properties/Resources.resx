@@ -117,8 +117,38 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ConfigFileName" xml:space="preserve">
+    <value>config.xml</value>
+  </data>
+  <data name="CopyFileError" xml:space="preserve">
+    <value>Error! Cant copy file!</value>
+  </data>
+  <data name="CreateFolderError" xml:space="preserve">
+    <value>Error! Cant create folder!</value>
+  </data>
+  <data name="DeleteFileError" xml:space="preserve">
+    <value>Error! Cant delete file!</value>
+  </data>
+  <data name="FolderForBackup" xml:space="preserve">
+    <value>backupedFiles</value>
+  </data>
+  <data name="FolderForLogs" xml:space="preserve">
+    <value>backup</value>
+  </data>
+  <data name="FolderForMonitorableData" xml:space="preserve">
+    <value>data</value>
+  </data>
   <data name="PressAnyKey" xml:space="preserve">
     <value>Press any key to exit</value>
+  </data>
+  <data name="ReadConfigError" xml:space="preserve">
+    <value>Error! Cant read config!</value>
+  </data>
+  <data name="ReadLogError" xml:space="preserve">
+    <value>Error! Cant read log!</value>
+  </data>
+  <data name="ResetText" xml:space="preserve">
+    <value>Reset folder condition. Enter date and time (for example DD/MM/YYYY HH:MM:SS) or empty string, if you want return current condition:</value>
   </data>
   <data name="SelectModeText" xml:space="preserve">
     <value>Select mode:{0}   1:Watch {0}   2:Reset</value>
@@ -126,7 +156,16 @@
   <data name="TxtMask" xml:space="preserve">
     <value>*.txt</value>
   </data>
+  <data name="WriteConfigError" xml:space="preserve">
+    <value>Error! Cant write config!</value>
+  </data>
+  <data name="WriteLogError" xml:space="preserve">
+    <value>Error! Cant write log!</value>
+  </data>
   <data name="WrongMode" xml:space="preserve">
     <value>{0}Wrong mode!</value>
+  </data>
+  <data name="XmlMask" xml:space="preserve">
+    <value>*.xml</value>
   </data>
 </root>

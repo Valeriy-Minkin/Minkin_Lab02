@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Minkin_Lab02.Properties;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Minkin_Lab02
 
         public ConfigManager()
         {
-            ConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.xml");
+            ConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.ConfigFileName);
         }
 
         public bool Exist()
@@ -27,11 +28,25 @@ namespace Minkin_Lab02
             Cache.getInstance().CurrentConfig = new Config();
             if (this.Exist())
             {
-                Cache.getInstance().CurrentConfig = this.ReadFromFile();
+                try
+                {
+                    Cache.getInstance().CurrentConfig = this.ReadFromFile();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(Resources.ReadConfigError);
+                }
                 LogManager logManager = new LogManager();
                 if (Cache.getInstance().CurrentConfig.Logs.Count != 0)
                 {
-                    Cache.getInstance().CurrentLog = logManager.ReadFromFile(Cache.getInstance().CurrentConfig.Logs.Last().Path);
+                    try
+                    {
+                        Cache.getInstance().CurrentLog = logManager.ReadFromFile(Cache.getInstance().CurrentConfig.Logs.Last().Path);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
                 }
                 else
                 {
@@ -40,7 +55,14 @@ namespace Minkin_Lab02
             }
             else
             {
-                this.WriteToFile(Cache.getInstance().CurrentConfig);
+                try
+                {
+                    this.WriteToFile(Cache.getInstance().CurrentConfig);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
             }
         }
 
@@ -50,7 +72,14 @@ namespace Minkin_Lab02
             XmlSerializer serializer = new XmlSerializer(typeof(Config));
             using (FileStream filestream = new FileStream(ConfigPath, FileMode.OpenOrCreate))
             {
-                config = (Config)serializer.Deserialize(filestream);
+                try
+                {
+                    config = (Config)serializer.Deserialize(filestream);
+                }
+                catch
+                {
+                    throw new Exception(Resources.ReadConfigError);
+                }
             }
             return config;
         }
@@ -58,9 +87,16 @@ namespace Minkin_Lab02
         public void WriteToFile(Config config)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Config));
-            using (FileStream filestream = new FileStream("config.xml", FileMode.OpenOrCreate))
+            using (FileStream filestream = new FileStream(Resources.ConfigFileName, FileMode.OpenOrCreate))
             {
-                serializer.Serialize(filestream, config);
+                try
+                {
+                    serializer.Serialize(filestream, config);
+                }
+                catch
+                {
+                    throw new Exception(Resources.WriteConfigError);
+                }
             }
         }
     }

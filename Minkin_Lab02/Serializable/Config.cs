@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Configuration;
+using Minkin_Lab02.Properties;
 
 namespace Minkin_Lab02
 {
@@ -14,7 +15,7 @@ namespace Minkin_Lab02
     public class Config
     {
         public string ConfigPath { get; set; }
-        public string LogsOfBackupFolder { get; set; }
+        public string FolderForLogs { get; set; }
         public string BackupFolder { get; set; }
 
         public List<string> MonitorableFolders { get; set; }
@@ -22,14 +23,12 @@ namespace Minkin_Lab02
 
         public Config()
         {
-            ConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.xml");
-            LogsOfBackupFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "backup\\");
-            BackupFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "backupedFiles\\");
+            ConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.ConfigFileName);
+            FolderForLogs = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForLogs);
+            BackupFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForBackup);
             MonitorableFolders = new List<string>();
             Logs = new List<Folder>();
-            // MonitorableFolders.Add(AppDomain.CurrentDomain.BaseDirectory);
-            //MonitorableFolders.Add(@"C:\Users\ray-s_000\Documents\Lab_01\Task10\TestFolder");
-            MonitorableFolders.Add(@"C:\temp");//
+            MonitorableFolders.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForMonitorableData));
         }
     }
 }

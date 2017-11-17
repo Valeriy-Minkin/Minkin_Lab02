@@ -28,19 +28,40 @@ namespace Minkin_Lab02
         private static void BackgroundCacheWriter(object state)
         {
             BackgroundWorker backgroundWorker = new BackgroundWorker();
-            backgroundWorker.CacheWrite();
+            try
+            {
+                backgroundWorker.CacheWrite();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private static void CheckFirstStart()
         {
             BackgroundWorker backgroundWorker = new BackgroundWorker();
-            backgroundWorker.CheckFirstStart();
+            try
+            {
+                backgroundWorker.CheckFirstStart();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private static void ReadConfig()
         {
             ConfigManager configManager = new ConfigManager();
-            configManager.ReadConfig();
+            try
+            {
+                configManager.ReadConfig();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private static void CheckKeys(string[] args)
@@ -53,7 +74,14 @@ namespace Minkin_Lab02
                         Watch();
                         break;
                     case ConsoleArgumentReset:
-                        Reset();
+                        try
+                        {
+                            Reset();
+                        }
+                        catch(Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
                         break;
                     default:
                         AskUser();
@@ -75,29 +103,51 @@ namespace Minkin_Lab02
                     Watch();
                     break;
                 case '2':
-                    Reset();
+                    try
+                    {
+                        Reset();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                     break;
                 default:
                     Console.WriteLine(Resources.WrongMode, Environment.NewLine);
                     break;
             }
+            Console.WriteLine(string.Empty);
         }
 
         private static void Reset()
         {
-            Console.WriteLine("Reset folder condition. Enter date and time (for example DD/MM/YYYY HH:MM:SS) or empty string, if you want return current condition:");
+            Console.WriteLine(Resources.ResetText);
             DateTime time = DateTime.Now;
             string data = Console.ReadLine();
             RollbackMachine rollbackMachine = new RollbackMachine();
             if (data.Equals(string.Empty))
             {
-                rollbackMachine.Rollback(DateTime.Now);
+                try
+                {
+                    rollbackMachine.Rollback(DateTime.Now);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
             }
             else
             {
-                if(DateTime.TryParse(data, out time))
+                if (DateTime.TryParse(data, out time))
                 {
-                    rollbackMachine.Rollback(time);
+                    try
+                    {
+                        rollbackMachine.Rollback(time);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
                 }
             }
         }

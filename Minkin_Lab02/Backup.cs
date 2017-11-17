@@ -17,32 +17,55 @@ namespace Minkin_Lab02
         }
 
         public void BackupFilesFromFolder(CurrentFilesCondition changedfiles)
-        {  
+        {
             LogManager logManager = new LogManager();
-            string fullfilename = logManager.WriteToFile(Cache.getInstance().CurrentLog, Cache.getInstance().CurrentConfig.LogsOfBackupFolder);
+            try
+            {
+                string fullfilename = logManager.WriteToFile(Cache.getInstance().CurrentLog, Cache.getInstance().CurrentConfig.FolderForLogs);
+                Folder folder = new Folder() { Path = fullfilename, Time = DateTime.Now };
+                Cache.getInstance().CurrentConfig.Logs.Add(folder);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
             FilesManager filesManager = new FilesManager();
-            filesManager.WriteFileList(changedfiles, Cache.getInstance().CurrentConfig.BackupFolder);
-            Folder folder = new Folder() { Path = fullfilename, Time = DateTime.Now };
-            Cache.getInstance().CurrentConfig.Logs.Add(folder);
+            try
+            {
+                filesManager.WriteFileList(changedfiles, Cache.getInstance().CurrentConfig.BackupFolder);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
 
         public void BackupFile(string path)
         {
-            FileData data = new FileData() { Path = path, Name = path.Substring(path.LastIndexOf('\\') + 1), BackupName = path.Substring(path.LastIndexOf('\\') + 1) + DateTime.Now.Ticks.ToString()+Cache.getInstance().GetCount().ToString(), DateOfChange = DateTime.Now };
-            Cache.getInstance().CurrentLog.files.RemoveAll(x => x.Path == data.Path);
-            Cache.getInstance().CurrentLog.files.Add(data);
-            Cache.getInstance().ChangedFiles.files.RemoveAll(x => x.Path == data.Path);
-            Cache.getInstance().ChangedFiles.files.Add(data);
+            FileData data = new FileData() { Path = path, Name = path.Substring(path.LastIndexOf('\\') + 1), BackupName = path.Substring(path.LastIndexOf('\\') + 1) + DateTime.Now.Ticks.ToString() + Cache.getInstance().GetCount().ToString(), DateOfChange = DateTime.Now };
+            Cache.getInstance().CurrentLog.Files.RemoveAll(x => x.Path == data.Path);
+            Cache.getInstance().CurrentLog.Files.Add(data);
+            Cache.getInstance().ChangedFiles.Files.RemoveAll(x => x.Path == data.Path);
+            Cache.getInstance().ChangedFiles.Files.Add(data);
         }
 
         public void BackupWithoutFile()
         {
-            Cache.getInstance().CurrentLog.files.RemoveAll(x => x.Path == Path);
+            Cache.getInstance().CurrentLog.Files.RemoveAll(x => x.Path == Path);
             LogManager logManager = new LogManager();
-            string fullfilename = logManager.WriteToFile(Cache.getInstance().CurrentLog, Cache.getInstance().CurrentConfig.LogsOfBackupFolder);
-            Folder folder = new Folder() { Path = fullfilename, Time = DateTime.Now };
-            Cache.getInstance().CurrentConfig.Logs.Add(folder);
-            Cache.getInstance().HasChanges = true;
+            try
+            {
+                string fullfilename = logManager.WriteToFile(Cache.getInstance().CurrentLog, Cache.getInstance().CurrentConfig.FolderForLogs);
+                Folder folder = new Folder() { Path = fullfilename, Time = DateTime.Now };
+                Cache.getInstance().CurrentConfig.Logs.Add(folder);
+                Cache.getInstance().HasChanges = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
         }
     }
 }

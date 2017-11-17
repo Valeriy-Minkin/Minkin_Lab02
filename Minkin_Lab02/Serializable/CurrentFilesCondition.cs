@@ -11,16 +11,16 @@ namespace Minkin_Lab02
     [Serializable]
     public class CurrentFilesCondition
     {
-        public List<FileData> files { get; set; } 
+        public List<FileData> Files { get; set; } 
 
         public CurrentFilesCondition()
         {
-            files = new List<FileData>();
+            Files = new List<FileData>();
         }
 
         public CurrentFilesCondition(IEnumerable<string> list)
         {
-            files = new List<FileData>();
+            Files = new List<FileData>();
             foreach (string file in list)
             {
                 FileData data = new FileData();
@@ -28,7 +28,7 @@ namespace Minkin_Lab02
                 data.Name = file.Substring(file.LastIndexOf('\\') + 1);
                 data.DateOfChange = DateTime.Now;
                 data.BackupName = data.Name + data.DateOfChange.Ticks.ToString();
-                files.Add(data);
+                Files.Add(data);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Minkin_Lab02.Properties;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,11 +13,18 @@ namespace Minkin_Lab02
     {
         public void WriteFileList(CurrentFilesCondition log, string path)
         {
-            FileData[] newLog = new FileData[log.files.Count];
-            log.files.CopyTo(newLog);
+            FileData[] newLog = new FileData[log.Files.Count];
+            log.Files.CopyTo(newLog);
             if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory(path);
+                try
+                {
+                    Directory.CreateDirectory(path);
+                }
+                catch
+                {
+                    throw new Exception(Resources.CreateFolderError);
+                }
             }
 
             foreach (var file in newLog)
@@ -25,9 +33,9 @@ namespace Minkin_Lab02
                 {
                     File.Copy(file.Path, Path.Combine(path, file.BackupName));
                 }
-                catch (Exception ex)
+                catch
                 {
-                    Console.WriteLine(ex.Message);
+                    throw new Exception(Resources.CopyFileError);
                 }
             }
         }
@@ -36,7 +44,14 @@ namespace Minkin_Lab02
         {
             if (!Directory.Exists(backupFolder))
             {
-                Directory.CreateDirectory(backupFolder);
+                try
+                {
+                    Directory.CreateDirectory(backupFolder);
+                }
+                catch
+                {
+                    throw new Exception(Resources.CreateFolderError);
+                }
             }
             try
             {
@@ -44,7 +59,7 @@ namespace Minkin_Lab02
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                throw new Exception(Resources.CopyFileError);
             }
 
         }
@@ -53,7 +68,7 @@ namespace Minkin_Lab02
         {
             foreach (var currentfolder in Cache.getInstance().CurrentConfig.MonitorableFolders)
             {
-                IEnumerable<string> list = Directory.EnumerateFiles(currentfolder, "*.txt", SearchOption.AllDirectories);
+                IEnumerable<string> list = Directory.EnumerateFiles(currentfolder, Resources.TxtMask, SearchOption.AllDirectories);
                 foreach (var file in list)
                 {
                     try
@@ -62,7 +77,7 @@ namespace Minkin_Lab02
                     }
                     catch
                     {
-                        Console.WriteLine("Can't delete file");
+                        throw new Exception(Resources.DeleteFileError);
                     }
                 }
             }

@@ -59,7 +59,7 @@
     <Compile Include="Serializable\FileData.cs" />
     <Compile Include="Enums\FileTypes.cs" />
     <Compile Include="Serializable\Folder.cs" />
-    <Compile Include="Serializable\Log.cs" />
+    <Compile Include="Serializable\CurrentFilesCondition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimeMachine.cs" />

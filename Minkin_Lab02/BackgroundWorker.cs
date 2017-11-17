@@ -12,34 +12,80 @@ namespace Minkin_Lab02
     {
         public void CacheWrite()
         {
-            if (Cache.getInstance().ChangedFiles.files != null && Cache.getInstance().ChangedFiles.files.Count != 0)
+            if (Cache.getInstance().ChangedFiles.Files != null && Cache.getInstance().ChangedFiles.Files.Count != 0)
             {
                 BackupMachine backup = new BackupMachine();
-                backup.BackupFilesFromFolder(Cache.getInstance().ChangedFiles);
+                try
+                {
+                    backup.BackupFilesFromFolder(Cache.getInstance().ChangedFiles);
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
                 ConfigManager configManager = new ConfigManager();
-                configManager.WriteToFile(Cache.getInstance().CurrentConfig);
-                Cache.getInstance().ChangedFiles.files = new List<FileData>();
+                try
+                {
+                    configManager.WriteToFile(Cache.getInstance().CurrentConfig);
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                Cache.getInstance().ChangedFiles.Files = new List<FileData>();
             }
             if (Cache.getInstance().HasChanges)
             {
                 ConfigManager configManager = new ConfigManager();
-                configManager.WriteToFile(Cache.getInstance().CurrentConfig);
+                try
+                {
+                    configManager.WriteToFile(Cache.getInstance().CurrentConfig);
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
                 Cache.getInstance().HasChanges = false;
             }
         }
 
         public void CheckFirstStart()
         {
-            if (!Directory.Exists(Cache.getInstance().CurrentConfig.LogsOfBackupFolder))
+            if (!Directory.Exists(Cache.getInstance().CurrentConfig.FolderForLogs))
             {
                 BackupMachine backup = new BackupMachine();
                 backup.Path = Cache.getInstance().CurrentConfig.MonitorableFolders.First();
                 IEnumerable<string> list = Directory.EnumerateFiles(backup.Path, Resources.TxtMask, SearchOption.AllDirectories);
                 CurrentFilesCondition log = new CurrentFilesCondition(list);
                 Cache.getInstance().CurrentLog = log;
-                backup.BackupFilesFromFolder(log);
+                try
+                {
+                    backup.BackupFilesFromFolder(log);
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
                 ConfigManager configManager = new ConfigManager();
-                configManager.WriteToFile(Cache.getInstance().CurrentConfig);
+                try
+                {
+                    configManager.WriteToFile(Cache.getInstance().CurrentConfig);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+            if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForMonitorableData)))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForMonitorableData));
+                }
+                catch
+                {
+                    throw new Exception(Resources.CreateFolderError);
+                }
             }
         }
     }

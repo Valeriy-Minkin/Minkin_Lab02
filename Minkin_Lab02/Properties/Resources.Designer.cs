@@ -61,11 +61,101 @@ namespace Minkin_Lab02.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на config.xml.
+        /// </summary>
+        public static string ConfigFileName {
+            get {
+                return ResourceManager.GetString("ConfigFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Error! Cant copy file!.
+        /// </summary>
+        public static string CopyFileError {
+            get {
+                return ResourceManager.GetString("CopyFileError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Error! Cant create folder!.
+        /// </summary>
+        public static string CreateFolderError {
+            get {
+                return ResourceManager.GetString("CreateFolderError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Error! Cant delete file!.
+        /// </summary>
+        public static string DeleteFileError {
+            get {
+                return ResourceManager.GetString("DeleteFileError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на backupedFiles.
+        /// </summary>
+        public static string FolderForBackup {
+            get {
+                return ResourceManager.GetString("FolderForBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на backup.
+        /// </summary>
+        public static string FolderForLogs {
+            get {
+                return ResourceManager.GetString("FolderForLogs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на data.
+        /// </summary>
+        public static string FolderForMonitorableData {
+            get {
+                return ResourceManager.GetString("FolderForMonitorableData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Press any key to exit.
         /// </summary>
         public static string PressAnyKey {
             get {
                 return ResourceManager.GetString("PressAnyKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Error! Cant read config!.
+        /// </summary>
+        public static string ReadConfigError {
+            get {
+                return ResourceManager.GetString("ReadConfigError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Error! Cant read log!.
+        /// </summary>
+        public static string ReadLogError {
+            get {
+                return ResourceManager.GetString("ReadLogError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Reset folder condition. Enter date and time (for example DD/MM/YYYY HH:MM:SS) or empty string, if you want return current condition:.
+        /// </summary>
+        public static string ResetText {
+            get {
+                return ResourceManager.GetString("ResetText", resourceCulture);
             }
         }
         
@@ -88,11 +178,38 @@ namespace Minkin_Lab02.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Error! Cant write config!.
+        /// </summary>
+        public static string WriteConfigError {
+            get {
+                return ResourceManager.GetString("WriteConfigError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Error! Cant write log!.
+        /// </summary>
+        public static string WriteLogError {
+            get {
+                return ResourceManager.GetString("WriteLogError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на {0}Wrong mode!.
         /// </summary>
         public static string WrongMode {
             get {
                 return ResourceManager.GetString("WrongMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на *.xml.
+        /// </summary>
+        public static string XmlMask {
+            get {
+                return ResourceManager.GetString("XmlMask", resourceCulture);
             }
         }
     }
