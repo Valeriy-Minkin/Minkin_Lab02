@@ -42,5 +42,16 @@ namespace Minkin_Lab02
             CurrentData.getInstance().CurrentConfig.Logs.Add(folder);
             CurrentData.getInstance().CurrentLog = log;
         }
+
+        public void BackupWithoutFile()
+        {
+            IEnumerable<string> list = Directory.EnumerateFiles(Path, "*", SearchOption.AllDirectories);
+            Log log = new Log(list);
+            LogManager logManager = new LogManager();
+            string fullfilename = logManager.WriteToFile(log, CurrentData.getInstance().CurrentConfig.LogsOfBackupFolder);
+            Folder folder = new Folder() { Path = fullfilename, Time = DateTime.Now };
+            CurrentData.getInstance().CurrentConfig.Logs.Add(folder);
+            CurrentData.getInstance().CurrentLog = log;
+        }
     }
 }

@@ -10,7 +10,6 @@ namespace Minkin_Lab02
     {
         private static CurrentData instance;
         private int _count;
-        public int fuck = 0;
 
         private CurrentData()
         {

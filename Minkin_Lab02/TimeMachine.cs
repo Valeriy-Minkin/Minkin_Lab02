@@ -52,16 +52,21 @@ namespace Minkin_Lab02
 
         private void OnDeleted(object sender, FileSystemEventArgs e)
         {
-            //throw new NotImplementedException();
+            if (!Directory.Exists(e.FullPath))
+            {//фаил
+                Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
+                backup.BackupWithoutFile();
+            }
+            Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
         }
 
         private void OnRenamed(object sender, RenamedEventArgs e)
         {
             if (!Directory.Exists(e.FullPath))
             {//фаил
-                CurrentData.getInstance().fuck++;
+                Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
+                backup.BackupFile(e.FullPath);
             }
-
             Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
         }
 
@@ -71,9 +76,7 @@ namespace Minkin_Lab02
             {//фаил
                 Backup backup = new Backup(e.FullPath.Substring(0,e.FullPath.LastIndexOf('\\')));
                 backup.BackupFile(e.FullPath);
-                CurrentData.getInstance().fuck++;
             }
-            int iii = CurrentData.getInstance().fuck;
             Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
         }
     }
