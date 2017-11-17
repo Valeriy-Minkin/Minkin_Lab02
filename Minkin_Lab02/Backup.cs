@@ -16,10 +16,8 @@ namespace Minkin_Lab02
             Path = path;
         }
 
-        public void BackupAllFolder()
-        {
-            IEnumerable<string> list = Directory.EnumerateFiles(Path, "*", SearchOption.AllDirectories);
-            Log log = new Log(list);
+        public void BackupAllFolder(Log log)
+        {  
             LogManager logManager = new LogManager();
             string fullfilename = logManager.WriteToFile(log, CurrentData.getInstance().CurrentConfig.LogsOfBackupFolder);
             FilesManager filesManager = new FilesManager();
@@ -33,13 +31,12 @@ namespace Minkin_Lab02
         {
             IEnumerable<string> list = Directory.EnumerateFiles(Path, "*", SearchOption.AllDirectories);
             Log log = new Log(list);
-            LogManager logManager = new LogManager();
-            string fullfilename = logManager.WriteToFile(log, CurrentData.getInstance().CurrentConfig.LogsOfBackupFolder);
-            FilesManager filesManager = new FilesManager(); 
             FileData data = new FileData() { Path = path, Name = path.Substring(path.LastIndexOf('\\') + 1), BackupName = path.Substring(path.LastIndexOf('\\') + 1) + DateTime.Now.Ticks.ToString()+CurrentData.getInstance().GetCount().ToString(), DateOfChange = DateTime.Now };
-            filesManager.WriteFile(data, CurrentData.getInstance().CurrentConfig.BackupFolder);
-            Folder folder = new Folder() { Path = fullfilename, Time = DateTime.Now };
-            CurrentData.getInstance().CurrentConfig.Logs.Add(folder);
+            
+            if (!(CurrentData.getInstance().ChangedFiles.files.Count(x=>x.Path.Equals(data.Path))!=0))
+            {
+                CurrentData.getInstance().ChangedFiles.files.Add(data);
+            }           
             CurrentData.getInstance().CurrentLog = log;
         }
 

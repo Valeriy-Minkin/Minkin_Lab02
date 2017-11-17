@@ -26,18 +26,21 @@ namespace Minkin_Lab02
         {
             string Filter = string.Empty;
             NotifyFilters notifyFilters;
+            FileSystemWatcher watcher = new FileSystemWatcher();
             switch (type)
             {
                 case FileType.Folder:
                     Filter = "*";
                     notifyFilters = NotifyFilters.DirectoryName;
+                    watcher.Deleted += new FileSystemEventHandler(OnDeletedFolder);
                     break;
                 default:
-                    Filter = "*"; //.txt
+                    Filter = "*.txt"; //
                     notifyFilters = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime;
+                    watcher.Deleted += new FileSystemEventHandler(OnDeleted);
                     break;
             }
-            FileSystemWatcher watcher = new FileSystemWatcher();
+
             watcher.Path = Path;
             watcher.InternalBufferSize = 100000000;
             watcher.NotifyFilter = notifyFilters;
@@ -45,36 +48,46 @@ namespace Minkin_Lab02
             watcher.IncludeSubdirectories = true;
             watcher.Changed += new FileSystemEventHandler(OnChanged);
             watcher.Created += new FileSystemEventHandler(OnChanged);
-            watcher.Deleted += new FileSystemEventHandler(OnDeleted);
+
             watcher.Renamed += new RenamedEventHandler(OnRenamed);
             watcher.EnableRaisingEvents = true;
         }
 
+        private void OnDeletedFolder(object sender, FileSystemEventArgs e)
+        {
+            Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
+            backup.BackupWithoutFile();
+        }
+
         private void OnDeleted(object sender, FileSystemEventArgs e)
         {
-            if (!Directory.Exists(e.FullPath))
-            {//фаил
-                Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
-                backup.BackupWithoutFile();
-            }
+            Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
+            backup.BackupWithoutFile();
             Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
         }
 
         private void OnRenamed(object sender, RenamedEventArgs e)
         {
             if (!Directory.Exists(e.FullPath))
-            {//фаил
+            {
                 Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
                 backup.BackupFile(e.FullPath);
+                Console.WriteLine("File: {0} is file {1}", e.FullPath, e.ChangeType);
             }
-            Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);
+            else
+            {
+                Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\'))); //
+                backup.BackupWithoutFile();
+                Console.WriteLine("File: {0} is folder {1}", e.FullPath, e.ChangeType);
+            }
+            
         }
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
             if (!Directory.Exists(e.FullPath))
-            {//фаил
-                Backup backup = new Backup(e.FullPath.Substring(0,e.FullPath.LastIndexOf('\\')));
+            {
+                Backup backup = new Backup(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
                 backup.BackupFile(e.FullPath);
             }
             Console.WriteLine("File: {0} is {1}", e.FullPath, e.ChangeType);

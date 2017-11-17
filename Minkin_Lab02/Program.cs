@@ -11,10 +11,13 @@ namespace Minkin_Lab02
 {
     class Program
     {
+        const string ConsoleArgumentWatch = "watch";
+        const string ConsoleArgumentReset = "reset";
+
         static void Main(string[] args)
         {
             ReadConfig();
-            Timer timer = new Timer(RewriteConfig, null, 1000, 10000);
+            Timer timer = new Timer(RewriteConfig, null, 1000, 2000);
             CheckFirstStart();
             CheckKeys(args);
             Console.WriteLine("Press any key for exit");
@@ -23,17 +26,25 @@ namespace Minkin_Lab02
 
         private static void RewriteConfig(object state)
         {
-            ConfigManager configManager = new ConfigManager();
-            configManager.WriteToFile(CurrentData.getInstance().CurrentConfig);
+            if (CurrentData.getInstance().ChangedFiles.files!=null && CurrentData.getInstance().ChangedFiles.files.Count != 0)
+            {
+                ConfigManager configManager = new ConfigManager();
+                configManager.WriteToFile(CurrentData.getInstance().CurrentConfig);
+                Backup backup = new Backup();
+                backup.BackupAllFolder(CurrentData.getInstance().ChangedFiles);
+                CurrentData.getInstance().ChangedFiles.files = new List<FileData>();
+            }
         }
 
         private static void CheckFirstStart()
         {
-            if (!Directory.Exists(CurrentData.getInstance().CurrentConfig.LogsOfBackupFolder)) //config.LogsOfBackupFolder))
+            if (!Directory.Exists(CurrentData.getInstance().CurrentConfig.LogsOfBackupFolder))
             { 
                 Backup backup = new Backup();
                 backup.Path = CurrentData.getInstance().CurrentConfig.MonitorableFolders.First();
-                backup.BackupAllFolder();
+                IEnumerable<string> list = Directory.EnumerateFiles(backup.Path, "*", SearchOption.AllDirectories);
+                Log log = new Log(list);
+                backup.BackupAllFolder(log);
             }
         }
 
@@ -45,21 +56,14 @@ namespace Minkin_Lab02
             {
                 CurrentData.getInstance().CurrentConfig = configManager.ReadFromFile();
                 LogManager logManager = new LogManager();
-                CurrentData.getInstance().CurrentLog = logManager.ReadFromFile(CurrentData.getInstance().CurrentConfig.Logs.Last().Path);
-                //Dictionary<string, int> dick = new Dictionary<string, int>();
-                //foreach(var temp in CurrentData.getInstance().CurrentLog.files)
-                //{
-                //    if (dick.ContainsKey(temp.BackupName))
-                //    {
-                //        dick[temp.BackupName]++;
-                //    }
-                //    else
-                //    {
-                //        dick.Add(temp.BackupName, 0);
-                //    }
-                //}
-                //int dick2 = dick.Count(x => x.Value > 0);
-                //Console.WriteLine();
+                if (CurrentData.getInstance().CurrentConfig.Logs.Count != 0)
+                {
+                    CurrentData.getInstance().CurrentLog = logManager.ReadFromFile(CurrentData.getInstance().CurrentConfig.Logs.Last().Path);
+                }
+                else
+                {
+                    CurrentData.getInstance().CurrentLog = new Log();
+                }
             }
             else
             {
@@ -73,10 +77,10 @@ namespace Minkin_Lab02
             {
                 switch (args[0])
                 {
-                    case "watch":
+                    case ConsoleArgumentWatch:
                         Watch();
                         break;
-                    case "reset":
+                    case ConsoleArgumentReset:
                         Reset();
                         break;
                     default:

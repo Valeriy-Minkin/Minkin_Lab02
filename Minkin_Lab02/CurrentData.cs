@@ -13,6 +13,9 @@ namespace Minkin_Lab02
 
         private CurrentData()
         {
+            CurrentConfig = new Config();
+            CurrentLog = new Log();
+            ChangedFiles = new Log();
             _count = 0;
         }
 
@@ -25,6 +28,7 @@ namespace Minkin_Lab02
 
         public Config CurrentConfig { get; set; }
         public Log CurrentLog { get; set; }
+        public Log ChangedFiles { get; set; }
 
         public long GetCount()
         {
