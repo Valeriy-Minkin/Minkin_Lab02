@@ -31,7 +31,7 @@ namespace Minkin_Lab02
                 ConfigManager configManager = new ConfigManager();
                 configManager.WriteToFile(CurrentData.getInstance().CurrentConfig);
                 Backup backup = new Backup();
-                backup.BackupAllFolder(CurrentData.getInstance().ChangedFiles);
+                backup.BackupAllFolder(CurrentData.getInstance().CurrentLog, CurrentData.getInstance().ChangedFiles);
                 CurrentData.getInstance().ChangedFiles.files = new List<FileData>();
             }
         }
@@ -44,7 +44,8 @@ namespace Minkin_Lab02
                 backup.Path = CurrentData.getInstance().CurrentConfig.MonitorableFolders.First();
                 IEnumerable<string> list = Directory.EnumerateFiles(backup.Path, "*", SearchOption.AllDirectories);
                 Log log = new Log(list);
-                backup.BackupAllFolder(log);
+                backup.BackupAllFolder(log, log);
+                CurrentData.getInstance().CurrentLog = log;
             }
         }
 
@@ -113,7 +114,21 @@ namespace Minkin_Lab02
 
         private static void Reset()
         {
-            Console.WriteLine("Reset");
+            Console.WriteLine("Reset folder condition. Enter date and time (for example DD/MM/YYYY HH:MM:SS) or empty string, if you want return current condition:");
+            DateTime time = DateTime.Now;
+            string data = Console.ReadLine();
+            RollbackMachine rollbackMachine = new RollbackMachine();
+            if (data.Equals(string.Empty))
+            {
+                rollbackMachine.Rollback(DateTime.Now);
+            }
+            else
+            {
+                if(DateTime.TryParse(data, out time))
+                {
+                    rollbackMachine.Rollback(time);
+                }
+            }
         }
 
         private static void Watch()

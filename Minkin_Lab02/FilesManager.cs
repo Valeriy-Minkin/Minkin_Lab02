@@ -12,12 +12,14 @@ namespace Minkin_Lab02
     {
         public void WriteFileList(Log log, string path)
         {
+            FileData[] newLog = new FileData[log.files.Count];
+            log.files.CopyTo(newLog);
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
-            foreach (var file in log.files)
+            foreach (var file in newLog)
             {
                 try
                 {

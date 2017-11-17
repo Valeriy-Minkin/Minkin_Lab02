@@ -16,14 +16,16 @@ namespace Minkin_Lab02
             Path = path;
         }
 
-        public void BackupAllFolder(Log log)
+        public void BackupAllFolder(Log log, Log changedfiles)
         {  
             LogManager logManager = new LogManager();
-            string fullfilename = logManager.WriteToFile(log, CurrentData.getInstance().CurrentConfig.LogsOfBackupFolder);
+            string fullfilename = logManager.WriteToFile(changedfiles, CurrentData.getInstance().CurrentConfig.LogsOfBackupFolder);
             FilesManager filesManager = new FilesManager();
-            filesManager.WriteFileList(log, CurrentData.getInstance().CurrentConfig.BackupFolder);
+            filesManager.WriteFileList(changedfiles, CurrentData.getInstance().CurrentConfig.BackupFolder);
             Folder folder = new Folder() { Path = fullfilename, Time = DateTime.Now };
             CurrentData.getInstance().CurrentConfig.Logs.Add(folder);
+            IEnumerable<string> list = Directory.EnumerateFiles(Path, "*", SearchOption.AllDirectories);
+            log = new Log(list);
             CurrentData.getInstance().CurrentLog = log;
         }
 

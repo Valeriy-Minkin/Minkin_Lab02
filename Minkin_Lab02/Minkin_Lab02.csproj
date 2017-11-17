@@ -47,6 +47,7 @@
     <Compile Include="CurrentData.cs" />
     <Compile Include="FilesManager.cs" />
     <Compile Include="LogManager.cs" />
+    <Compile Include="RollbackMachine.cs" />
     <Compile Include="Serializable\Config.cs" />
     <Compile Include="ConfigManager.cs" />
     <Compile Include="Serializable\FileData.cs" />
