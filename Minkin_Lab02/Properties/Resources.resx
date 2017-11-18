@@ -166,6 +166,6 @@
     <value>{0}Wrong mode!</value>
   </data>
   <data name="XmlMask" xml:space="preserve">
-    <value>*.xml</value>
+    <value>.xml</value>
   </data>
 </root>

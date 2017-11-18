@@ -205,7 +205,7 @@ namespace Minkin_Lab02.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на *.xml.
+        ///   Ищет локализованную строку, похожую на .xml.
         /// </summary>
         public static string XmlMask {
             get {

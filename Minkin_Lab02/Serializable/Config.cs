@@ -28,7 +28,6 @@ namespace Minkin_Lab02
             BackupFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForBackup);
             MonitorableFolders = new List<string>();
             Logs = new List<Folder>();
-            MonitorableFolders.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForMonitorableData));
         }
     }
 }

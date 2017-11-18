@@ -51,9 +51,32 @@ namespace Minkin_Lab02
 
         public void CheckFirstStart()
         {
+            if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForMonitorableData)))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForMonitorableData));
+                }
+                catch
+                {
+                    throw new Exception(Resources.CreateFolderError);
+                }
+            }
+            if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForBackup)))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForBackup));
+                }
+                catch
+                {
+                    throw new Exception(Resources.CreateFolderError);
+                }
+            }
             if (!Directory.Exists(Cache.getInstance().CurrentConfig.FolderForLogs))
             {
                 BackupMachine backup = new BackupMachine();
+                Cache.getInstance().CurrentConfig.MonitorableFolders.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForMonitorableData));
                 backup.Path = Cache.getInstance().CurrentConfig.MonitorableFolders.First();
                 IEnumerable<string> list = Directory.EnumerateFiles(backup.Path, Resources.TxtMask, SearchOption.AllDirectories);
                 CurrentFilesCondition log = new CurrentFilesCondition(list);
@@ -74,17 +97,6 @@ namespace Minkin_Lab02
                 catch (Exception ex)
                 {
                     throw new Exception(ex.Message);
-                }
-            }
-            if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForMonitorableData)))
-            {
-                try
-                {
-                    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForMonitorableData));
-                }
-                catch
-                {
-                    throw new Exception(Resources.CreateFolderError);
                 }
             }
         }
