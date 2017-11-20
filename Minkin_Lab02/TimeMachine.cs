@@ -1,11 +1,5 @@
-﻿using Minkin_Lab02.Properties;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Minkin_Lab02
 {
@@ -29,63 +23,53 @@ namespace Minkin_Lab02
             switch (type)
             {
                 case FileType.Folder:
-                    watcher = CreateFolderWather();
+                    watcher = CreateFolderWatcher();
                     break;
                 default:
-                    watcher = CreateFileWather();
+                    watcher = CreateFileWatcher();
                     break;
             }
             watcher.Path = Path;
             watcher.InternalBufferSize = int.MaxValue / 2;
             watcher.IncludeSubdirectories = true;
-            watcher.Changed += new FileSystemEventHandler(OnChanged);
-            watcher.Created += new FileSystemEventHandler(OnChanged);
-            watcher.Renamed += new RenamedEventHandler(OnRenamed);
+            watcher.Changed += OnChanged;
+            watcher.Created += OnChanged;
+            watcher.Renamed += OnRenamed;
             watcher.EnableRaisingEvents = true;
         }
 
-        private FileSystemWatcher CreateFileWather()
+        private FileSystemWatcher CreateFileWatcher()
         {
-            FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Filter = Resources.TxtMask;
-            watcher.NotifyFilter = NotifyFilters.DirectoryName;
-            watcher.Deleted += new FileSystemEventHandler(OnDeleted);
+            FileSystemWatcher watcher = new FileSystemWatcher
+            {
+                Filter = Constants.TxtMask,
+                NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime
+            };
+            watcher.Deleted += OnDeleted;
             return watcher;
         }
 
-        private FileSystemWatcher CreateFolderWather()
+        private FileSystemWatcher CreateFolderWatcher()
         {
-            FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Filter = "*";
-            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime;
-            watcher.Deleted += new FileSystemEventHandler(OnDeletedFolder);
+            FileSystemWatcher watcher = new FileSystemWatcher
+            {
+                Filter = "*",
+                NotifyFilter = NotifyFilters.DirectoryName
+            };
+            watcher.Deleted += OnDeletedFolder;
             return watcher;
         }
 
         private void OnDeletedFolder(object sender, FileSystemEventArgs e)
         {
-            BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
-            try
-            {
+            BackupMachine backup = new BackupMachine(e.FullPath);
                 backup.BackupWithoutFile();
-            }
-            catch
-            {
-
-            }
         }
 
         private void OnDeleted(object sender, FileSystemEventArgs e)
         {
             BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
-            try
-            {
                 backup.BackupWithoutFile();
-            }
-            catch
-            {
-
-            }
         }
 
         private void OnRenamed(object sender, RenamedEventArgs e)
@@ -93,14 +77,7 @@ namespace Minkin_Lab02
             if (!Directory.Exists(e.FullPath))
             {
                 BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
-                try
-                {
                     backup.BackupFile(e.FullPath);
-                }
-                catch
-                {
-
-                }
             }
             else
             {
@@ -112,10 +89,19 @@ namespace Minkin_Lab02
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
-            if (!Directory.Exists(e.FullPath))
+            if (!Directory.Exists(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\'))))
             {
                 BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
                 backup.BackupFile(e.FullPath);
+            }
+            else
+            {
+                BackupMachine backup = new BackupMachine();
+                backup.Path = e.FullPath;
+                IEnumerable<string> list = Directory.EnumerateFiles(backup.Path, Constants.TxtMask, SearchOption.AllDirectories);
+                CurrentFilesCondition log = new CurrentFilesCondition(list);
+                Cache.Instance.ChangedFiles = log;
+                backup.BackupFilesFromFolder(log);
             }
         }
     }

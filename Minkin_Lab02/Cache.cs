@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Minkin_Lab02
+﻿namespace Minkin_Lab02
 {
     class Cache
     {
@@ -13,8 +7,8 @@ namespace Minkin_Lab02
         public CurrentFilesCondition ChangedFiles { get; set; }
         public bool HasChanges { get; set; }
 
-        private static Cache instance;
-        private int _count;
+        private int count;
+        private static readonly Cache instance = new Cache();
 
         private Cache()
         {
@@ -22,19 +16,20 @@ namespace Minkin_Lab02
             CurrentLog = new CurrentFilesCondition();
             ChangedFiles = new CurrentFilesCondition();
             HasChanges = false;
-            _count = 0;
+            count = 0;
         }
 
-        public static Cache getInstance()
+        public static Cache Instance
         {
-            if (instance == null)
-                instance = new Cache();
-            return instance;
+            get
+            {
+                return instance;
+            }
         }
 
         public long GetCount()
         {
-            return _count++;
+            return count++;
         }
     }
 }

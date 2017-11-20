@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace Minkin_Lab02
 {
@@ -23,10 +18,12 @@ namespace Minkin_Lab02
             Files = new List<FileData>();
             foreach (string file in list)
             {
-                FileData data = new FileData();
-                data.Path = file;
-                data.Name = file.Substring(file.LastIndexOf('\\') + 1);
-                data.DateOfChange = DateTime.Now;
+                FileData data = new FileData
+                {
+                    Path = file,
+                    Name = file.Substring(file.LastIndexOf('\\') + 1),
+                    DateOfChange = DateTime.Now
+                };
                 data.BackupName = data.Name + data.DateOfChange.Ticks.ToString();
                 Files.Add(data);
             }

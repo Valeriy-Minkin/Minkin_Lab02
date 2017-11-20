@@ -1,10 +1,7 @@
-﻿using Minkin_Lab02.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Minkin_Lab02
 {
@@ -12,92 +9,38 @@ namespace Minkin_Lab02
     {
         public void CacheWrite()
         {
-            if (Cache.getInstance().ChangedFiles.Files != null && Cache.getInstance().ChangedFiles.Files.Count != 0)
+            if (Cache.Instance.ChangedFiles.Files != null && Cache.Instance.ChangedFiles.Files.Any())
             {
                 BackupMachine backup = new BackupMachine();
-                try
-                {
-                    backup.BackupFilesFromFolder(Cache.getInstance().ChangedFiles);
-                }
-                catch(Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
+                backup.BackupFilesFromFolder(Cache.Instance.ChangedFiles);
                 ConfigManager configManager = new ConfigManager();
-                try
-                {
-                    configManager.WriteToFile(Cache.getInstance().CurrentConfig);
-                }
-                catch(Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-                Cache.getInstance().ChangedFiles.Files = new List<FileData>();
+                configManager.WriteToFile(Cache.Instance.CurrentConfig);
+                Cache.Instance.ChangedFiles.Files = new List<FileData>();
             }
-            if (Cache.getInstance().HasChanges)
+            if (Cache.Instance.HasChanges)
             {
                 ConfigManager configManager = new ConfigManager();
-                try
-                {
-                    configManager.WriteToFile(Cache.getInstance().CurrentConfig);
-                }
-                catch(Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-                Cache.getInstance().HasChanges = false;
+                configManager.WriteToFile(Cache.Instance.CurrentConfig);
+                Cache.Instance.HasChanges = false;
             }
         }
 
         public void CheckFirstStart()
         {
-            if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForMonitorableData)))
-            {
-                try
-                {
-                    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForMonitorableData));
-                }
-                catch
-                {
-                    throw new Exception(Resources.CreateFolderError);
-                }
-            }
-            if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForBackup)))
-            {
-                try
-                {
-                    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForBackup));
-                }
-                catch
-                {
-                    throw new Exception(Resources.CreateFolderError);
-                }
-            }
-            if (!Directory.Exists(Cache.getInstance().CurrentConfig.FolderForLogs))
+            FilesManager filesManager = new FilesManager();
+            filesManager.CheckFolderExistOrCreateNewFolder(Constants.FolderForMonitorableData);
+            filesManager.CheckFolderExistOrCreateNewFolder(Constants.FolderNameForBackups);
+            if (!Directory.Exists(Cache.Instance.CurrentConfig.FolderForLogs))
             {
                 BackupMachine backup = new BackupMachine();
-                Cache.getInstance().CurrentConfig.MonitorableFolders.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForMonitorableData));
-                backup.Path = Cache.getInstance().CurrentConfig.MonitorableFolders.First();
-                IEnumerable<string> list = Directory.EnumerateFiles(backup.Path, Resources.TxtMask, SearchOption.AllDirectories);
+                Cache.Instance.CurrentConfig.MonitorableFolders.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Constants.FolderForMonitorableData));
+                backup.Path = Cache.Instance.CurrentConfig.MonitorableFolders.First();
+                IEnumerable<string> list = Directory.EnumerateFiles(backup.Path, Constants.TxtMask, SearchOption.AllDirectories);
                 CurrentFilesCondition log = new CurrentFilesCondition(list);
-                Cache.getInstance().CurrentLog = log;
-                try
-                {
-                    backup.BackupFilesFromFolder(log);
-                }
-                catch(Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
+                Cache.Instance.CurrentLog = log;
+                backup.BackupFilesFromFolder(log);
                 ConfigManager configManager = new ConfigManager();
-                try
-                {
-                    configManager.WriteToFile(Cache.getInstance().CurrentConfig);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
+                configManager.WriteToFile(Cache.Instance.CurrentConfig);
             }
         }
     }

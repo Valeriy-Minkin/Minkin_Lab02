@@ -1,21 +1,18 @@
 ﻿using Minkin_Lab02.Properties;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace Minkin_Lab02
 {
     internal class ConfigManager
     {
-        public string ConfigPath { get; private set; }
+        public string ConfigPath { get;}
 
         public ConfigManager()
         {
-            ConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.ConfigFileName);
+            ConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Constants.ConfigFileName);
         }
 
         public bool Exist()
@@ -25,44 +22,23 @@ namespace Minkin_Lab02
 
         public void ReadConfig()
         {
-            Cache.getInstance().CurrentConfig = new Config();
+            Cache.Instance.CurrentConfig = new Config();
             if (this.Exist())
             {
-                try
-                {
-                    Cache.getInstance().CurrentConfig = this.ReadFromFile();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(Resources.ReadConfigError);
-                }
+                Cache.Instance.CurrentConfig = this.ReadFromFile();
                 LogManager logManager = new LogManager();
-                if (Cache.getInstance().CurrentConfig.Logs.Count != 0)
+                if (Cache.Instance.CurrentConfig.Logs.Count != 0)
                 {
-                    try
-                    {
-                        Cache.getInstance().CurrentLog = logManager.ReadFromFile(Cache.getInstance().CurrentConfig.Logs.Last().Path);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception(ex.Message);
-                    }
+                    Cache.Instance.CurrentLog = logManager.ReadFromFile(Cache.Instance.CurrentConfig.Logs.Last().Path);
                 }
                 else
                 {
-                    Cache.getInstance().CurrentLog = new CurrentFilesCondition();
+                    Cache.Instance.CurrentLog = new CurrentFilesCondition();
                 }
             }
             else
             {
-                try
-                {
-                    this.WriteToFile(Cache.getInstance().CurrentConfig);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
+                this.WriteToFile(Cache.Instance.CurrentConfig);
             }
         }
 
@@ -76,9 +52,9 @@ namespace Minkin_Lab02
                 {
                     config = (Config)serializer.Deserialize(filestream);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    throw new Exception(Resources.ReadConfigError);
+                    throw new FileSystemError(Resources.ReadConfigError, ex);
                 }
             }
             return config;
@@ -87,15 +63,15 @@ namespace Minkin_Lab02
         public void WriteToFile(Config config)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Config));
-            using (FileStream filestream = new FileStream(Resources.ConfigFileName, FileMode.OpenOrCreate))
+            using (FileStream filestream = new FileStream(Constants.ConfigFileName, FileMode.OpenOrCreate))
             {
                 try
                 {
                     serializer.Serialize(filestream, config);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    throw new Exception(Resources.WriteConfigError);
+                    throw new FileSystemError(Resources.WriteConfigError, ex);
                 }
             }
         }

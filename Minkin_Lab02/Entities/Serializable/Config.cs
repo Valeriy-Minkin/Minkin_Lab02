@@ -1,13 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-using System.Configuration;
-using Minkin_Lab02.Properties;
 
 namespace Minkin_Lab02
 {
@@ -23,9 +16,9 @@ namespace Minkin_Lab02
 
         public Config()
         {
-            ConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.ConfigFileName);
-            FolderForLogs = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForLogs);
-            BackupFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Resources.FolderForBackup);
+            ConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Constants.ConfigFileName);
+            FolderForLogs = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Constants.FolderNameForLogs);
+            BackupFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Constants.FolderNameForBackups);
             MonitorableFolders = new List<string>();
             Logs = new List<Folder>();
         }

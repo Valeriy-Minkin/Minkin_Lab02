@@ -2,10 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Minkin_Lab02
 {
@@ -13,6 +9,7 @@ namespace Minkin_Lab02
     {
         public void WriteFileList(CurrentFilesCondition log, string path)
         {
+            path = path.Substring(0, path.LastIndexOf('\\'));
             FileData[] newLog = new FileData[log.Files.Count];
             log.Files.CopyTo(newLog);
             if (!Directory.Exists(path))
@@ -21,9 +18,9 @@ namespace Minkin_Lab02
                 {
                     Directory.CreateDirectory(path);
                 }
-                catch
+                catch(Exception ex)
                 {
-                    throw new Exception(Resources.CreateFolderError);
+                    throw new FileSystemError(string.Format(Resources.CreateFolderError, path), ex);
                 }
             }
 
@@ -33,9 +30,9 @@ namespace Minkin_Lab02
                 {
                     File.Copy(file.Path, Path.Combine(path, file.BackupName));
                 }
-                catch
+                catch(Exception ex)
                 {
-                    throw new Exception(Resources.CopyFileError);
+                    throw new FileSystemError(string.Format(Resources.CopyFileError, file.Name), ex);
                 }
             }
         }
@@ -48,9 +45,9 @@ namespace Minkin_Lab02
                 {
                     Directory.CreateDirectory(backupFolder);
                 }
-                catch
+                catch(Exception ex)
                 {
-                    throw new Exception(Resources.CreateFolderError);
+                    throw new FileSystemError(string.Format(Resources.CreateFolderError, backupFolder), ex);
                 }
             }
             try
@@ -59,26 +56,41 @@ namespace Minkin_Lab02
             }
             catch (Exception ex)
             {
-                throw new Exception(Resources.CopyFileError);
+                throw new FileSystemError(string.Format(Resources.CopyFileError, fileData.Name), ex);
             }
 
         }
 
         public void ClearFolder()
         {
-            foreach (var currentfolder in Cache.getInstance().CurrentConfig.MonitorableFolders)
+            foreach (var currentfolder in Cache.Instance.CurrentConfig.MonitorableFolders)
             {
-                IEnumerable<string> list = Directory.EnumerateFiles(currentfolder, Resources.TxtMask, SearchOption.AllDirectories);
+                IEnumerable<string> list = Directory.EnumerateFiles(currentfolder, Constants.TxtMask, SearchOption.AllDirectories);
                 foreach (var file in list)
                 {
                     try
                     {
                         File.Delete(file);
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        throw new Exception(Resources.DeleteFileError);
+                        throw new FileSystemError(string.Format(Resources.DeleteFileError, file), ex);
                     }
+                }
+            }
+        }
+
+        public void CheckFolderExistOrCreateNewFolder(string folderName)
+        {
+            if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, folderName)))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, folderName));
+                }
+                catch(Exception ex)
+                {
+                    throw new FileSystemError(string.Format(Resources.CreateFolderError, folderName),ex);
                 }
             }
         }

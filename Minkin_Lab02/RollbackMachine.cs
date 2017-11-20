@@ -1,10 +1,7 @@
 ﻿using Minkin_Lab02.Properties;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Minkin_Lab02
 {
@@ -25,67 +22,41 @@ namespace Minkin_Lab02
         public void Rollback(DateTime time)
         {
             bool done = false;
-            if (Cache.getInstance().CurrentConfig.Logs.Count != 0)
+            if (Cache.Instance.CurrentConfig.Logs.Count != 0)
             {
-                if (Cache.getInstance().CurrentConfig.Logs.Count == 1)
+                if (Cache.Instance.CurrentConfig.Logs.Count == 1)
                 {
-                    if (Cache.getInstance().CurrentConfig.Logs.Last().Time > time)
+                    if (Cache.Instance.CurrentConfig.Logs.Last().Time > time)
                     {
-                        try
-                        {
-                            RewriteFiles(Cache.getInstance().CurrentConfig.Logs.Last());
-                        }
-                        catch(Exception ex)
-                        {
-                            throw new Exception(ex.Message);
-                        }
+                        RewriteFiles(Cache.Instance.CurrentConfig.Logs.Last());
                         done = true;
                     }
                 }
                 else
                 {
-                    if(Cache.getInstance().CurrentConfig.Logs.Last().Time < time && !done)
+                    if (Cache.Instance.CurrentConfig.Logs.Last().Time < time && !done)
                     {
-                        try
-                        {
-                            RewriteFiles(Cache.getInstance().CurrentConfig.Logs.Last());
-                        }
-                        catch(Exception ex)
-                        {
-                            throw new Exception(ex.Message);
-                        }
+                        RewriteFiles(Cache.Instance.CurrentConfig.Logs.Last());
                         done = true;
                     }
-                    if (Cache.getInstance().CurrentConfig.Logs.First().Time > time && !done)
+                    if (Cache.Instance.CurrentConfig.Logs.First().Time > time && !done)
                     {
-                        try
-                        {
-                            RewriteFiles(Cache.getInstance().CurrentConfig.Logs.First());
-                        }
-                        catch(Exception ex)
-                        {
-                            throw new Exception(ex.Message);
-                        }
+
+                        RewriteFiles(Cache.Instance.CurrentConfig.Logs.First());
                         done = true;
                     }
-                    if(!done)
+                    if (!done)
                     {
                         int currentLogNumber = 0;
-                        for(int i=1; i< Cache.getInstance().CurrentConfig.Logs.Count; i++)
+                        for (int i = 1; i < Cache.Instance.CurrentConfig.Logs.Count; i++)
                         {
-                            if (Cache.getInstance().CurrentConfig.Logs[i].Time.CompareTo(time)<0)
+                            if (Cache.Instance.CurrentConfig.Logs[i].Time.CompareTo(time) < 0)
                             {
                                 currentLogNumber = i - 1;
                             }
                         }
-                        try
-                        {
-                            RewriteFiles(Cache.getInstance().CurrentConfig.Logs[currentLogNumber]);
-                        }
-                        catch(Exception ex)
-                        {
-                            throw new Exception(ex.Message);
-                        }
+                        RewriteFiles(Cache.Instance.CurrentConfig.Logs[currentLogNumber]);
+
                     }
                 }
             }
@@ -96,23 +67,9 @@ namespace Minkin_Lab02
         {
             LogManager logManager = new LogManager();
             CurrentFilesCondition log = new CurrentFilesCondition();
-            try
-            {
-                log = logManager.ReadFromFile(folder.Path);
-            }
-            catch(Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            log = logManager.ReadFromFile(folder.Path);
             FilesManager filesManager = new FilesManager();
-            try
-            {
-                filesManager.ClearFolder();
-            }
-            catch(Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            filesManager.ClearFolder();
             string path;
             foreach (FileData file in log.Files)
             {
@@ -123,18 +80,18 @@ namespace Minkin_Lab02
                     {
                         Directory.CreateDirectory(path);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        throw new Exception(Resources.CreateFolderError);
+                        throw new FileSystemError(string.Format(Resources.CreateFolderError, path), ex);
                     }
                 }
                 try
                 {
-                    File.Copy(Path.Combine(Cache.getInstance().CurrentConfig.BackupFolder, file.BackupName), Path.Combine(path, file.Name), true);
+                    File.Copy(Path.Combine(Cache.Instance.CurrentConfig.BackupFolder, file.BackupName), Path.Combine(path, file.Name), true);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    throw new Exception(Resources.CopyFileError);
+                    throw new FileSystemError(string.Format(Resources.CopyFileError, file.Name), ex);
                 }
             }
         }

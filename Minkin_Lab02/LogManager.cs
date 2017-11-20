@@ -1,11 +1,6 @@
 ﻿using Minkin_Lab02.Properties;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace Minkin_Lab02
@@ -14,7 +9,7 @@ namespace Minkin_Lab02
     {
         public string WriteToFile(CurrentFilesCondition log, string path)
         {
-            string fullfilepath = Path.Combine(path, DateTime.Now.Ticks.ToString()+ Cache.getInstance().GetCount().ToString() + Resources.XmlMask);
+            string fullfilepath = Path.Combine(path, DateTime.Now.Ticks.ToString() + Cache.Instance.GetCount().ToString() + Constants.XmlExtension);
             XmlSerializer serializer = new XmlSerializer(typeof(CurrentFilesCondition));
             if (!Directory.Exists(path))
             {
@@ -22,9 +17,9 @@ namespace Minkin_Lab02
                 {
                     Directory.CreateDirectory(path);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    throw new Exception(Resources.CreateFolderError);
+                    throw new FileSystemError(string.Format(Resources.CreateFolderError, path), ex);
                 }
             }
             using (FileStream filestream = new FileStream(fullfilepath, FileMode.OpenOrCreate))
@@ -33,9 +28,9 @@ namespace Minkin_Lab02
                 {
                     serializer.Serialize(filestream, log);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    throw new Exception(Resources.WriteLogError);
+                    throw new FileSystemError(Resources.WriteLogError, ex);
                 }
             }
             return fullfilepath;
@@ -51,9 +46,9 @@ namespace Minkin_Lab02
                 {
                     log = (CurrentFilesCondition)serializer.Deserialize(filestream);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    throw new Exception(Resources.ReadLogError);
+                    throw new FileSystemError(Resources.ReadLogError, ex);
                 }
             }
             return log;
