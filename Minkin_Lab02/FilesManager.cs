@@ -9,7 +9,6 @@ namespace Minkin_Lab02
     {
         public void WriteFileList(CurrentFilesCondition log, string path)
         {
-            path = path.Substring(0, path.LastIndexOf('\\'));
             FileData[] newLog = new FileData[log.Files.Count];
             log.Files.CopyTo(newLog);
             if (!Directory.Exists(path))

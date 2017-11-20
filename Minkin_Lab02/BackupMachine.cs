@@ -38,7 +38,23 @@ namespace Minkin_Lab02
 
         public void BackupWithoutFile()
         {
-            Cache.Instance.CurrentLog.Files.RemoveAll(x => x.Path.Contains(Path));
+            Cache.Instance.CurrentLog.Files.RemoveAll(x => x.Path==Path);
+            LogManager logManager = new LogManager();
+            string fullfilename = logManager.WriteToFile(Cache.Instance.CurrentLog, Cache.Instance.CurrentConfig.FolderForLogs);
+            Folder folder = new Folder() { Path = fullfilename, Time = DateTime.Now };
+            Cache.Instance.CurrentConfig.Logs.Add(folder);
+            Cache.Instance.HasChanges = true;
+        }
+
+        public void BackupRenamedFolder(string oldPath)
+        {
+            for(int i=0; i< Cache.Instance.CurrentLog.Files.Count; i++)
+            {
+                if (Cache.Instance.CurrentLog.Files[i].Path.Contains(oldPath))
+                {
+                    Cache.Instance.CurrentLog.Files[i].Path = Cache.Instance.CurrentLog.Files[i].Path.Replace(oldPath, Path);
+                }
+            }
             LogManager logManager = new LogManager();
             string fullfilename = logManager.WriteToFile(Cache.Instance.CurrentLog, Cache.Instance.CurrentConfig.FolderForLogs);
             Folder folder = new Folder() { Path = fullfilename, Time = DateTime.Now };

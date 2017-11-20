@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackgroundWorker.cs" />
-    <Compile Include="Backup.cs" />
+    <Compile Include="BackupMachine.cs" />
     <Compile Include="Cache.cs" />
     <Compile Include="Entities\Constants\Constants.cs" />
     <Compile Include="Entities\Exceptions\FileSystemError.cs" />

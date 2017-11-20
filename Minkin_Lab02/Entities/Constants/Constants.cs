@@ -3,7 +3,7 @@
     public static class Constants
     {
         public const string ConfigFileName = "config.xml";
-        public const string FolderNameForBackups = "backup";
+        public const string FolderNameForBackups = "backupfolder";
         public const string FolderNameForLogs = "logs";
         public const string FolderForMonitorableData = "data";
         public const string TxtMask = "*.txt";

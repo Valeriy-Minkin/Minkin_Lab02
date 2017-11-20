@@ -68,7 +68,7 @@ namespace Minkin_Lab02
 
         private void OnDeleted(object sender, FileSystemEventArgs e)
         {
-            BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
+            BackupMachine backup = new BackupMachine(e.FullPath);
                 backup.BackupWithoutFile();
         }
 
@@ -81,27 +81,29 @@ namespace Minkin_Lab02
             }
             else
             {
-                BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\'))); //
-                backup.BackupWithoutFile();
+                BackupMachine backup = new BackupMachine(e.FullPath);
+                backup.BackupRenamedFolder(e.OldFullPath);
             }
 
         }
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
-            if (!Directory.Exists(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\'))))
+            string temp = e.FullPath.Substring(0, e.FullPath.LastIndexOf("\\"));
+            if (!Directory.Exists(e.FullPath))
             {
-                BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf('\\')));
+                BackupMachine backup = new BackupMachine(e.FullPath.Substring(0, e.FullPath.LastIndexOf("\\")));
                 backup.BackupFile(e.FullPath);
             }
             else
             {
-                BackupMachine backup = new BackupMachine();
-                backup.Path = e.FullPath;
-                IEnumerable<string> list = Directory.EnumerateFiles(backup.Path, Constants.TxtMask, SearchOption.AllDirectories);
+                IEnumerable<string> list = Directory.EnumerateFiles(e.FullPath, Constants.TxtMask, SearchOption.AllDirectories);
                 CurrentFilesCondition log = new CurrentFilesCondition(list);
-                Cache.Instance.ChangedFiles = log;
-                backup.BackupFilesFromFolder(log);
+                foreach(var file in log.Files)
+                {
+                    Cache.Instance.CurrentLog.Files.Add(file);
+                    Cache.Instance.ChangedFiles.Files.Add(file);
+                }
             }
         }
     }
